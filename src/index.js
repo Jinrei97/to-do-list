@@ -8,6 +8,10 @@ class ProjectList {
         this.project_list.push(new Project(title, dueDate, description));
         console.log(list.project_list);
     }
+    removeProject(index) {
+        this.project_list.splice(index, 1);
+        console.log(list.project_list);
+    }
 }
 
 class Project {
@@ -15,11 +19,20 @@ class Project {
         this.title = title;
         this.dueDate = dueDate;
         this.description = description;
-        this.tasks = [];
+        this.tasks = {};
     }
-    addTask(title, dueDate, description, important) {
-        this.tasks.push(new Task(title, dueDate, description, important));
+    addTask(taskGroup, dueDate, description, important) {
+        if (Object.keys(this.tasks).includes(taskGroup)) {
+            this.tasks[taskGroup].push(new Task(taskGroup, dueDate, description, important));
+        } else {
+            this.tasks[taskGroup] = [];
+            this.tasks[taskGroup].push(new Task(taskGroup, dueDate, description, important));
+        }
         console.log(this.tasks);
+    }
+    removeTask(group, index) {
+        this.tasks[group].splice(index, 1);
+        console.log(list.tasks[group]);
     }
 }
 
@@ -32,9 +45,41 @@ class Task {
     }    
 }
 
-const list = new ProjectList();
+class DisplayController {
+    constructor() {
+        this.content = document.querySelector(".content");
+    }
+    makeProjectCard(project) {
+        const card = document.createElement("div");
+        const header = document.createElement("div"); 
+        const title = document.createElement("h3");
+        const date = document.createElement("p");
+        const description = document.createElement("p");
+    
+        title.textContent = project.title;
+        date.textContent = project.dueDate;
+        description.textContent = project.description;
+        header.appendChild(title);
+        header.appendChild(date);
+        card.appendChild(header);
+        card.appendChild(description);
+        if(project.important) card.classList.toggle("important");
+        return card;
+    }
+    loadProjectList(list) {
+        this.content.classList.toggle("projectList"); 
+        for (let project of list) {
+            const card = this.makeProjectCard(project);
+            this.content.appendChild(card); 
+        } 
+    }
 
+}
+
+const list = new ProjectList();
+const control = new DisplayController(list);
 list.addProject("Test", "12/05/2025", "prova");
 list.project_list[0].addTask("test_task", "12/04/2025", "prova Task", false);
 list.project_list[0].addTask("test_task", "12/04/2025", "prova Task", false);
-list.project_list[0].addTask("test_task", "12/04/2025", "prova Task", false);
+list.project_list[0].addTask("test", "12/04/2025", "prova Task", false);
+control.loadProjectList(list.project_list);
