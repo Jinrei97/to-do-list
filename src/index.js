@@ -1,4 +1,6 @@
 import * as css from "./index.css";
+import { ProjectList } from "./projectList.js";
+import { DisplayController } from "./display.js";
 
 class ProjectList {
     constructor(controller) {
@@ -76,6 +78,15 @@ class DisplayController {
         } 
     }
 
+    cleanContent() {
+        this.content.replaceChildren();
+    }
+    changeContentClass(className) {
+        if (!this.content.classList.contains(className)) {
+            this.content.classList.toggle(className);
+        };
+    }
+
     makeProjectCard(project) {
         const card = document.createElement("div");
         const header = document.createElement("div"); 
@@ -93,18 +104,14 @@ class DisplayController {
         if(project.important) card.classList.toggle("important");
         return card;
     }
-    checkContentClass(className) {
-        return this.content.classList.contains(className);
-    }
     loadProjectList(projectList) {
-        if (!this.checkContentClass("projectList")) {
-            this.content.classList.toggle("projectList"); 
-            for (let project of projectList) {
-                const card = this.makeProjectCard(project);
-                this.content.appendChild(card); 
-            }
-            this.refreshProjectSidebar(projectList);
+        this.cleanContent();
+        this.changeContentClass("projectList"); 
+        for (let project of projectList) {
+            const card = this.makeProjectCard(project);
+            this.content.appendChild(card); 
         }
+        this.refreshProjectSidebar(projectList);
     }
 
     loadToday(){
