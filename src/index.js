@@ -1,9 +1,26 @@
 import * as css from "./index.css";
 
 class ProjectList {
-    constructor() {
+    constructor(controller) {
         this.project_list = [];
+        this.controller = controller;
+        this.initializeTab();
     }
+    initializeTab() {
+        const tabs = [document.querySelector(".tabs").children];
+        const btn_add = tabs[0][0];
+        const btn_home = tabs[0][1];
+        const btn_today = tabs[0][2];
+        const btn_upcoming = tabs[0][3];
+        const btn_urgent = tabs[0][4];
+
+        btn_add.addEventListener("click", () => this.controller.loadProjectForm(this.project_list));
+        btn_home.addEventListener("click", () => this.controller.loadProjectList(this.project_list));
+        btn_today.addEventListener("click", () => this.controller.loadToday(this.project_list));
+        btn_upcoming.addEventListener("click", () => this.controller.loadUpcoming(this.project_list));
+        btn_urgent.addEventListener("click", () => this.controller.loadUrgent(this.project_list));
+    }
+
     addProject(title, dueDate, description) {
         this.project_list.push(new Project(title, dueDate, description));
         console.log(list.project_list);
@@ -76,13 +93,18 @@ class DisplayController {
         if(project.important) card.classList.toggle("important");
         return card;
     }
+    checkContentClass(className) {
+        return this.content.classList.contains(className);
+    }
     loadProjectList(projectList) {
-        this.content.classList.toggle("projectList"); 
-        for (let project of projectList) {
-            const card = this.makeProjectCard(project);
-            this.content.appendChild(card); 
+        if (!this.checkContentClass("projectList")) {
+            this.content.classList.toggle("projectList"); 
+            for (let project of projectList) {
+                const card = this.makeProjectCard(project);
+                this.content.appendChild(card); 
+            }
+            this.refreshProjectSidebar(projectList);
         }
-        this.refreshProjectSidebar(projectList);
     }
 
     loadToday(){
@@ -100,16 +122,16 @@ class DisplayController {
 
 }
 
-const list = new ProjectList();
-const control = new DisplayController(list);
+const control = new DisplayController();
+const list = new ProjectList(control);
 list.addProject("Test", "12/05/2025", "prova");
 list.addProject("Test", "12/05/2025", "prova");
 list.addProject("Test", "12/05/2025", "prova");
 list.addProject("Test", "12/05/2025", "prova");
+list.controller.loadProjectList(list.project_list);
 list.addProject("Test", "12/05/2025", "prova");
 list.addProject("Test", "12/05/2025", "prova");
 list.addProject("Test", "12/05/2025", "prova");
 list.project_list[0].addTask("test_task", "12/04/2025", "prova Task", false);
 list.project_list[0].addTask("test_task", "12/04/2025", "prova Task", false);
 list.project_list[0].addTask("test", "12/04/2025", "prova Task", false);
-control.loadProjectList(list.project_list);
