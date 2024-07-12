@@ -49,6 +49,16 @@ class DisplayController {
     constructor() {
         this.content = document.querySelector(".content");
     }
+    refreshProjectSidebar(projectList) {
+        const myProjects = document.querySelector(".projects");
+        myProjects.replaceChildren();
+        for (let project of projectList) {
+            const li = document.createElement("li");
+            li.textContent = project.title;
+            myProjects.appendChild(li);
+        } 
+    }
+
     makeProjectCard(project) {
         const card = document.createElement("div");
         const header = document.createElement("div"); 
@@ -66,18 +76,38 @@ class DisplayController {
         if(project.important) card.classList.toggle("important");
         return card;
     }
-    loadProjectList(list) {
+    loadProjectList(projectList) {
         this.content.classList.toggle("projectList"); 
-        for (let project of list) {
+        for (let project of projectList) {
             const card = this.makeProjectCard(project);
             this.content.appendChild(card); 
-        } 
+        }
+        this.refreshProjectSidebar(projectList);
+    }
+
+    loadToday(){
+
+    }
+    loadUpcoming(){
+
+    }
+    loadUrgent() {
+
+    }
+    loadSingleProject() {
+
     }
 
 }
 
 const list = new ProjectList();
 const control = new DisplayController(list);
+list.addProject("Test", "12/05/2025", "prova");
+list.addProject("Test", "12/05/2025", "prova");
+list.addProject("Test", "12/05/2025", "prova");
+list.addProject("Test", "12/05/2025", "prova");
+list.addProject("Test", "12/05/2025", "prova");
+list.addProject("Test", "12/05/2025", "prova");
 list.addProject("Test", "12/05/2025", "prova");
 list.project_list[0].addTask("test_task", "12/04/2025", "prova Task", false);
 list.project_list[0].addTask("test_task", "12/04/2025", "prova Task", false);
