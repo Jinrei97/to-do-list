@@ -1,10 +1,12 @@
 import * as css from "./index.css";
 import { ProjectList } from "./projectList.js";
 import { DisplayController } from "./display.js";
+import { Builder } from "./createElements.js";
+import { GetFromDOM } from "./getData.js";
 
 const todoList = new class List {
     constructor() {
-        this.controller = new DisplayController();
+        this.controller = new DisplayController(new Builder(), new GetFromDOM());
         this.projects = new ProjectList();
         this.initializeTab();
     }
