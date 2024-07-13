@@ -85,13 +85,22 @@ export class DisplayController {
         const btn_submit = document.createElement("button");
         btn_submit.addEventListener("click", (e) => {
             e.preventDefault();
-            projectList.addProject();
+            projectList.addProject(this.#getFormValues());
+            this.loadProjectList(projectList.project_list);
         });
         btn_submit.type = "submit";
         btn_submit.textContent = "Add project";
         form.appendChild(btn_submit);
         return form;
-    };
+    }
+    #getFormValues() {
+        const cards = this.content.querySelectorAll("div");
+        const values = [];
+        cards.forEach(card => {
+            values.push(card.querySelector("input, textarea").value);
+        });
+        return values;
+    }
 
     loadProjectForm(projectList) {
         this.cleanContent();
