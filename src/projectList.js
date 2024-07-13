@@ -5,6 +5,7 @@ export class ProjectList {
     }
 
     addProject(title, dueDate, description) {
+        
         this.project_list.push(new Project(title, dueDate, description));
         console.log(this.project_list);
     }

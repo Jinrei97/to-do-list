@@ -16,7 +16,7 @@ const todoList = new class List {
         const btn_upcoming = tabs[0][3];
         const btn_urgent = tabs[0][4];
 
-        btn_add.addEventListener("click", () => this.controller.loadProjectForm(this.projects.project_list));
+        btn_add.addEventListener("click", () => this.controller.loadProjectForm(this.projects));
         btn_home.addEventListener("click", () => this.controller.loadProjectList(this.projects.project_list));
         btn_today.addEventListener("click", () => this.controller.loadToday(this.projects.project_list));
         btn_upcoming.addEventListener("click", () => this.controller.loadUpcoming(this.projects.project_list));

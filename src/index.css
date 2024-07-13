@@ -15,3 +15,28 @@ body {
         grid-template-columns: repeat(4, 1fr);
         gap: 1rem;
     }
+    .content.addProject {
+        display: flex;
+        justify-content: center;
+    }
+        .content.addProject > form {
+            padding-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            border: 3px solid grey;
+            padding: 1rem;
+            flex: 1
+        }
+            form > div {
+                display: grid;
+                grid-template-columns: 1fr 2fr;
+                gap: 0.5rem;
+            }
+            form > div:last-of-type{
+                flex: 1;
+            }
+            form > button {
+                display: flex;
+                justify-content: center;
+            }

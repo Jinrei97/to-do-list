@@ -17,12 +17,11 @@ export class DisplayController {
         this.content.replaceChildren();
     }
     changeContentClass(className) {
-        if (!this.content.classList.contains(className)) {
-            this.content.classList.toggle(className);
-        };
+        this.content.classList = ["content"];
+        this.content.classList.toggle(className);
     }
 
-    makeProjectCard(project) {
+    #makeProjectCard(project) {
         const card = document.createElement("div");
         const header = document.createElement("div"); 
         const title = document.createElement("h3");
@@ -43,10 +42,62 @@ export class DisplayController {
         this.cleanContent();
         this.changeContentClass("projectList"); 
         for (let project of projectList) {
-            const card = this.makeProjectCard(project);
+            const card = this.#makeProjectCard(project);
             this.content.appendChild(card); 
         }
         this.refreshProjectSidebar(projectList);
+    }
+    // mostra un form per inserire un nuovo progetto
+    #createLabelInput(inputElement, attrName, name, type, placeholder, req, labelMessage, order=1) {
+        const label = document.createElement("label");
+        const input = document.createElement(inputElement);
+    
+        label.setAttribute("for", attrName);
+        label.classList.add(attrName);
+        label.textContent = labelMessage;
+    
+        input.setAttribute("id", attrName);
+        input.setAttribute("name", name);
+        input.setAttribute("type", type);
+        input.setAttribute("placeholder", placeholder);
+        if (req) input.required = true;
+    
+        const card = document.createElement("div");
+        if (order === 1) {
+            card.appendChild(label);
+            card.appendChild(input);
+        } else if (order === 2) {
+            card.appendChild(input);
+            card.appendChild(label);
+        }
+        return card;
+    }
+    
+    #createForm(projectList) {
+        const form = document.createElement("form");
+
+        const card_list = [];
+        card_list.push(this.#createLabelInput("input", "title", "title", "text", "", true, "Title (richiesto)"));
+        card_list.push(this.#createLabelInput("input", "dueDate", "dueDate", "date", "", true, "Scadenza (richiesto)"));
+        card_list.push(this.#createLabelInput("textarea", "description", "description", "text", "", false, "Descrizione"));
+        for (let card of card_list) form.appendChild(card);
+
+        const btn_submit = document.createElement("button");
+        btn_submit.addEventListener("click", (e) => {
+            e.preventDefault();
+            projectList.addProject();
+        });
+        btn_submit.type = "submit";
+        btn_submit.textContent = "Add project";
+        form.appendChild(btn_submit);
+        return form;
+    };
+
+    loadProjectForm(projectList) {
+        this.cleanContent();
+        this.changeContentClass("addProject");
+        this.content.appendChild(this.#createForm(projectList));
+        this.refreshProjectSidebar(projectList.project_list);
     }
 
     loadToday(){
