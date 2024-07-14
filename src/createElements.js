@@ -69,4 +69,11 @@ export class Builder {
         form.appendChild(btn_submit);
         return form;
     }
+
+    // today
+    /*
+    createTodayCards() {
+        const currentDate = new 
+    }
+        */
 }

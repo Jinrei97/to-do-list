@@ -27,13 +27,14 @@ const todoList = new class List {
 }
 
 todoList.controller.loadProjectList(todoList.projects.project_list);
-todoList.projects.addProject(["Test", "12/05/2025", "prova"]);
-todoList.projects.addProject(["Test", "12/05/2025", "prova"]);
-todoList.projects.addProject(["Test", "12/05/2025", "prova"]);
-todoList.projects.addProject(["Test", "12/05/2025", "prova"]);
-todoList.projects.addProject(["Test", "12/05/2025", "prova"]);
-todoList.projects.addProject(["Test", "12/05/2025", "prova"]);
-todoList.projects.addProject(["Test", "12/05/2025", "prova"]);
-todoList.projects.project_list[0].addTask("test_task", "12/04/2025", "prova Task", false);
-todoList.projects.project_list[0].addTask("test_task", "12/04/2025", "prova Task", false);
-todoList.projects.project_list[0].addTask("test", "12/04/2025", "prova Task", false);
+todoList.projects.addProject(["Test", "2025/03/12", "prova"]);
+todoList.projects.addProject(["Test", "2025/05/12", "prova"]);
+todoList.projects.addProject(["Test", "2025/03/12", "prova"]);
+todoList.projects.addProject(["Test", "2025/05/12", "prova"]);
+todoList.projects.addProject(["Test", "2025/03/12", "prova"]);
+todoList.projects.addProject(["Test", "2025/05/12", "prova"]);
+todoList.projects.addProject(["Test", "2025/03/12", "prova"]);
+todoList.projects.project_list[0].addTask("test_task", "2025/05/12", "prova Task", false);
+todoList.projects.project_list[0].addTask("test_task", "2025/04/12", "prova Task", false);
+todoList.projects.project_list[0].addTask("test", "2025/03/12", "prova Task", false);
+todoList.projects.project_list[0].addTask("test", "2025/03/14", "prova Task", false);

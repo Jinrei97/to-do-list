@@ -45,8 +45,11 @@ export class DisplayController {
         this.refreshProjectSidebar(projectList.project_list);
     }
 
-    loadToday(){
-
+    // mosta le task di oggi
+    loadToday(projectList){
+        this.cleanContent();
+        this.changeContentClass("today");
+        this.builder.createTodayCards(projectList);
     }
     loadUpcoming(){
 

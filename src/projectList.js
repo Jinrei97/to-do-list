@@ -1,11 +1,16 @@
+import { compareAsc, format } from "date-fns";
 
 export class ProjectList {
     constructor() {
         this.project_list = [];
     }
 
+    #sortProjects(a, b) {
+        return compareAsc(a.dueDate, b.dueDate);
+    }
     addProject([title, dueDate, description]) {
         this.project_list.push(new Project(title, dueDate, description));
+        this.project_list.sort(this.#sortProjects);
         console.log(this.project_list);
     }
     removeProject(index) {
@@ -17,17 +22,16 @@ export class ProjectList {
 class Project {
     constructor(title, dueDate, description) {
         this.title = title;
-        this.dueDate = dueDate;
+        this.dueDate = format(new Date(dueDate), "MM-dd-yyyy");
         this.description = description;
-        this.tasks = {};
+        this.tasks = [];
     }
-    addTask(taskGroup, dueDate, description, important) {
-        if (Object.keys(this.tasks).includes(taskGroup)) {
-            this.tasks[taskGroup].push(new Task(taskGroup, dueDate, description, important));
-        } else {
-            this.tasks[taskGroup] = [];
-            this.tasks[taskGroup].push(new Task(taskGroup, dueDate, description, important));
-        }
+    #sortTasks(a, b) {
+        return compareAsc(a.dueDate, b.dueDate);
+    }
+    addTask(dueDate, description, important) {
+        this.tasks.push(new Task(dueDate, description, important));
+        this.tasks.sort(this.#sortTasks);
         console.log(this.tasks);
     }
     removeTask(group, index) {
@@ -39,7 +43,7 @@ class Project {
 class Task {
     constructor(title, dueDate, description, important) {
         this.title = title;
-        this.dueDate = dueDate;
+        this.dueDate = format(new Date(dueDate), "MM-dd-yyyy");
         this.description = description;
         this.important = important;
     }    
