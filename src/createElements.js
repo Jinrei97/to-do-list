@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 
 export class Builder {
     constructor() { }
@@ -70,10 +71,48 @@ export class Builder {
         return form;
     }
 
-    // today
-    /*
-    createTodayCards() {
-        const currentDate = new 
+    #makeTaskCard(task) {
+        const card = document.createElement("div");
+        const title = document.createElement("h4");
+        const description = document.createElement("p");
+    
+        title.textContent = task.title;
+        description.textContent = task.description;
+        card.appendChild(title);
+        card.appendChild(description);
+        if(task.important) card.classList.toggle("important");
+        return card;
     }
-        */
+    makeTodayCard(project) {
+        const currentDate = format(new Date(), "MM-dd-yyyy");
+        const projectCard = this.makeProjectCard(project);
+
+        const taskListTitle = document.createElement("p");
+        taskListTitle.textContent = `Tasks for today (${currentDate}): `;
+        projectCard.appendChild(taskListTitle);
+        const todayTasks = [];
+        for (let task of project.tasks) {
+            if (task.dueDate === currentDate) {
+                todayTasks.push(task);
+            }
+        }
+        if (todayTasks.length > 0) {
+            for (let task of todayTasks) {
+                const taskCard = this.#makeTaskCard(task);
+                projectCard.appendChild(taskCard);
+            }
+        } else {
+            const div = document.createElement("div");
+            div.textContent = "No tasks today";
+            projectCard.appendChild(div);
+        }
+        return projectCard;
+        
+
+    }
+    // today
+    makeTodayCards() {
+        console.log(`current date: ${currentDate}`);
+
+    }
 }

@@ -38,3 +38,6 @@ todoList.projects.project_list[0].addTask("test_task", "2025/05/12", "prova Task
 todoList.projects.project_list[0].addTask("test_task", "2025/04/12", "prova Task", false);
 todoList.projects.project_list[0].addTask("test", "2025/03/12", "prova Task", false);
 todoList.projects.project_list[0].addTask("test", "2025/03/14", "prova Task", false);
+todoList.projects.project_list[1].addTask("test_1", "2024/07/14", "prova Task", false);
+todoList.projects.project_list[1].addTask("test_2", "2024/07/14", "prova Task", false);
+todoList.projects.project_list[0].addTask("test_1", "2024/07/14", "prova Task", false);

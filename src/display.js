@@ -49,7 +49,10 @@ export class DisplayController {
     loadToday(projectList){
         this.cleanContent();
         this.changeContentClass("today");
-        this.builder.createTodayCards(projectList);
+        for (let project of projectList) {
+            const card = this.builder.makeTodayCard(project);
+            this.content.appendChild(card); 
+        }
     }
     loadUpcoming(){
 
