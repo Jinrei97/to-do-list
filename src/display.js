@@ -46,23 +46,23 @@ export class DisplayController {
             this.content.appendChild(card); 
         }
     }
-    loadUpcoming(projectList, setupDateSelector){
+    loadUpcoming(projectList, setupDateSelector, setupImportant,
+        importantOnly = false,
+        dateFilter = this.dateCalc.format_ymd(this.dateCalc.addWeeks(new Date(), 1)),
+        impInitialValue = "false") {
         this.cleanContent();
         this.changeContentClass("upcoming");
-        const currentDate = this.dateCalc.format_mdy(new Date());
-        const nextWeek = this.dateCalc.format_mdy(this.dateCalc.addWeeks(currentDate, 1));
-        this.content.appendChild(this.builder.makeDateSelector());
+        this.content.appendChild(this.builder.makeDateSelector(dateFilter));
+        document.querySelector(".filter").appendChild(this.builder.makeImportantFilter());
         setupDateSelector();
+        setupImportant(impInitialValue);
         const containerCards = document.createElement("div");
         containerCards.classList.toggle("projectCards");
         for (let project of projectList) {
-            const card = this.builder.makeTaskCards(project, nextWeek);
+            const card = this.builder.makeTaskCards(project, dateFilter, importantOnly);
             containerCards.appendChild(card); 
         }
         this.content.appendChild(containerCards);
-    }
-    loadUrgent() {
-
     }
     loadSingleProject() {
 

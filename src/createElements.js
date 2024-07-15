@@ -29,7 +29,7 @@ export class Builder {
         return card;
     }
 
-    #createLabelInput(inputElement, attrName, name, type, placeholder, req, labelMessage, order=1) {
+    createLabelInput(inputElement, attrName, name, type, placeholder, req, labelMessage, order=1) {
         const label = document.createElement("label");
         const input = document.createElement(inputElement);
     
@@ -58,9 +58,9 @@ export class Builder {
         const form = document.createElement("form");
 
         const card_list = [];
-        card_list.push(this.#createLabelInput("input", "title", "title", "text", "", true, "Title (richiesto)"));
-        card_list.push(this.#createLabelInput("input", "dueDate", "dueDate", "date", "", true, "Scadenza (richiesto)"));
-        card_list.push(this.#createLabelInput("textarea", "description", "description", "text", "", false, "Descrizione"));
+        card_list.push(this.createLabelInput("input", "title", "title", "text", "", true, "Title (richiesto)"));
+        card_list.push(this.createLabelInput("input", "dueDate", "dueDate", "date", "", true, "Scadenza (richiesto)"));
+        card_list.push(this.createLabelInput("textarea", "description", "description", "text", "", false, "Descrizione"));
         for (let card of card_list) form.appendChild(card);
 
         const btn_submit = document.createElement("button");
@@ -71,14 +71,21 @@ export class Builder {
         return form;
     }
 
-    makeDateSelector() {
+    makeDateSelector(startDate) {
         const container = document.createElement("div");
         const datePicker = document.createElement("input");
         datePicker.type = "date";
-        datePicker.setAttribute("value", this.dateCalc.format(this.dateCalc.addWeeks(new Date(), 1), "yyyy-MM-dd"));
+        datePicker.setAttribute("value", startDate);
         datePicker.classList.toggle("datePicker");
+        container.classList.toggle("filter");
         container.appendChild(datePicker);
         return container;
+    }
+    makeImportantFilter() {
+        const impInput = this.createLabelInput(
+            "input", "impOnly", "impInput", "checkbox", "", false, "Only show important tasks", 2
+        );
+        return impInput;
     }
 
     #makeTaskCard(task) {
@@ -99,7 +106,7 @@ export class Builder {
         if(task.important) card.classList.toggle("important");
         return card;
     }
-    makeTaskCards(project, targetDate) {
+    makeTaskCards(project, targetDate, importantOnly = false) {
         const projectCard = this.makeProjectCard(project);
 
         const taskListTitle = document.createElement("p");
@@ -109,7 +116,11 @@ export class Builder {
         for (let task of project.tasks) {
             const comparison = this.dateCalc.compareAsc(task.dueDate, targetDate);
             if (comparison === -1 || comparison === 0) {
-                todayTasks.push(task);
+                if (importantOnly && task.important) {
+                    todayTasks.push(task);
+                } else if (!importantOnly) {
+                    todayTasks.push(task);
+                }
             }
         }
         if (todayTasks.length > 0) {

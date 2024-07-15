@@ -9,4 +9,7 @@ export class DateCalc {
     format_mdy(date) {
         return format(date, "MM-dd-yyyy");
     }
+    format_ymd(date) {
+        return format(date, "yyyy-MM-dd");
+    }
 }
