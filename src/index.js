@@ -8,6 +8,7 @@ import { DateCalc } from "./dateCalc.js";
 const todoList = new class List {
     constructor() {
         const dateCalculator = new DateCalc();
+        this.getDOM = new GetFromDOM();
         this.dateCalc = dateCalculator;
         this.controller = new DisplayController(new Builder(dateCalculator), new GetFromDOM(), dateCalculator);
         this.projects = new ProjectList(dateCalculator);
@@ -21,13 +22,24 @@ const todoList = new class List {
         const btn_upcoming = tabs[0][3];
         const btn_urgent = tabs[0][4];
 
-        btn_add.addEventListener("click", () => this.controller.loadProjectForm(this.projects));
+        btn_add.addEventListener("click", () => {
+            this.controller.loadProjectForm(this.projects);
+            this.setupSubmitButton.call(this); 
+        });
         btn_home.addEventListener("click", () => this.controller.loadProjectList(this.projects.project_list));
         btn_today.addEventListener("click", () => this.controller.loadToday(this.projects.project_list));
         btn_upcoming.addEventListener("click", () => this.controller.loadUpcoming(this.projects.project_list,
             this.setupDateSelector.bind(this)
         ));
         btn_urgent.addEventListener("click", () => this.controller.loadUrgent(this.projects.project_list));
+    }
+    setupSubmitButton(){
+        const btn_submit = document.querySelector(".submitProject");
+        btn_submit.addEventListener("click", (e) => {
+            e.preventDefault();
+            this.projects.addProject(this.getDOM.getFormValues(this.controller.content));
+            this.controller.loadProjectList(this.projects.project_list);
+        });
     }
     setupDateSelector() {
         const dateSelector = document.querySelector(".datePicker");
