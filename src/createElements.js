@@ -1,7 +1,7 @@
-import { format } from "date-fns";
-
 export class Builder {
-    constructor() { }
+    constructor(dateCalc) {
+        this.dateCalc = dateCalc;
+    }
 
     populateMyProjects(ul, elements) {
         for (let element of elements) {
@@ -71,28 +71,42 @@ export class Builder {
         return form;
     }
 
+    makeDateSelector() {
+        const container = document.createElement("div");
+        const datePicker = document.createElement("input");
+        datePicker.type = "date";
+        container.appendChild(datePicker);
+        return container;
+    }
+
     #makeTaskCard(task) {
         const card = document.createElement("div");
+        const header = document.createElement("div");
         const title = document.createElement("h4");
+        const date = document.createElement("p");
         const description = document.createElement("p");
     
         title.textContent = task.title;
+        date.textContent = task.dueDate;
         description.textContent = task.description;
-        card.appendChild(title);
+        header.classList.toggle("cardTask");
+        header.appendChild(title);
+        header.appendChild(date);
+        card.appendChild(header);
         card.appendChild(description);
         if(task.important) card.classList.toggle("important");
         return card;
     }
-    makeTodayCard(project) {
-        const currentDate = format(new Date(), "MM-dd-yyyy");
+    makeTaskCards(project, targetDate) {
         const projectCard = this.makeProjectCard(project);
 
         const taskListTitle = document.createElement("p");
-        taskListTitle.textContent = `Tasks for today (${currentDate}): `;
+        taskListTitle.textContent = `Tasks until ${targetDate}: `;
         projectCard.appendChild(taskListTitle);
         const todayTasks = [];
         for (let task of project.tasks) {
-            if (task.dueDate === currentDate) {
+            const comparison = this.dateCalc.compareAsc(task.dueDate, targetDate);
+            if (comparison === -1 || comparison === 0) {
                 todayTasks.push(task);
             }
         }
@@ -107,12 +121,5 @@ export class Builder {
             projectCard.appendChild(div);
         }
         return projectCard;
-        
-
-    }
-    // today
-    makeTodayCards() {
-        console.log(`current date: ${currentDate}`);
-
     }
 }

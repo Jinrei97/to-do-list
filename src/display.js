@@ -1,9 +1,9 @@
-
 export class DisplayController {
-    constructor(builder, getDOM) {
+    constructor(builder, getDOM, dateCalc) {
         this.content = document.querySelector(".content");
         this.builder = builder;
         this.getDOM = getDOM;
+        this.dateCalc = dateCalc;
     }
     refreshProjectSidebar(projectList) {
         const myProjects = document.querySelector(".projects");
@@ -49,13 +49,22 @@ export class DisplayController {
     loadToday(projectList){
         this.cleanContent();
         this.changeContentClass("today");
+        const currentDate = this.dateCalc.format_mdy(new Date());
         for (let project of projectList) {
-            const card = this.builder.makeTodayCard(project);
+            const card = this.builder.makeTaskCards(project, currentDate);
             this.content.appendChild(card); 
         }
     }
-    loadUpcoming(){
-
+    loadUpcoming(projectList){
+        this.cleanContent();
+        this.changeContentClass("upcoming");
+        const currentDate = this.dateCalc.format_mdy(new Date());
+        const nextWeek = this.dateCalc.format_mdy(this.dateCalc.addWeeks(currentDate, 1));
+        this.content.appendChild(this.builder.makeDateSelector());
+        for (let project of projectList) {
+            const card = this.builder.makeTaskCards(project, nextWeek);
+            this.content.appendChild(card); 
+        }
     }
     loadUrgent() {
 

@@ -3,11 +3,13 @@ import { ProjectList } from "./projectList.js";
 import { DisplayController } from "./display.js";
 import { Builder } from "./createElements.js";
 import { GetFromDOM } from "./getData.js";
+import { DateCalc } from "./dateCalc.js";
 
 const todoList = new class List {
     constructor() {
-        this.controller = new DisplayController(new Builder(), new GetFromDOM());
-        this.projects = new ProjectList();
+        const dateCalculator = new DateCalc();
+        this.controller = new DisplayController(new Builder(dateCalculator), new GetFromDOM(), dateCalculator);
+        this.projects = new ProjectList(dateCalculator);
         this.initializeTab();
     }
     initializeTab() {

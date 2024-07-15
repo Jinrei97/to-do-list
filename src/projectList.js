@@ -1,16 +1,15 @@
-import { compareAsc, format } from "date-fns";
-
 export class ProjectList {
-    constructor() {
+    constructor(dateCalc) {
         this.project_list = [];
+        this.dateCalc = dateCalc;
     }
 
     #sortProjects(a, b) {
-        return compareAsc(a.dueDate, b.dueDate);
+        return this.dateCalc.compareAsc(a.dueDate, b.dueDate);
     }
     addProject([title, dueDate, description]) {
-        this.project_list.push(new Project(title, dueDate, description));
-        this.project_list.sort(this.#sortProjects);
+        this.project_list.push(new Project(title, dueDate, description, this.dateCalc));
+        this.project_list.sort(() => this.#sortProjects);
         console.log(this.project_list);
     }
     removeProject(index) {
@@ -20,18 +19,19 @@ export class ProjectList {
 }
 
 class Project {
-    constructor(title, dueDate, description) {
+    constructor(title, dueDate, description, dateCalc) {
         this.title = title;
-        this.dueDate = format(new Date(dueDate), "MM-dd-yyyy");
+        this.dateCalc = dateCalc;
+        this.dueDate = this.dateCalc.format_mdy(new Date(dueDate));
         this.description = description;
         this.tasks = [];
     }
     #sortTasks(a, b) {
-        return compareAsc(a.dueDate, b.dueDate);
+        return this.dateCalc.compareAsc(a.dueDate, b.dueDate);
     }
-    addTask(dueDate, description, important) {
-        this.tasks.push(new Task(dueDate, description, important));
-        this.tasks.sort(this.#sortTasks);
+    addTask(title, dueDate, description, important) {
+        this.tasks.push(new Task(title, dueDate, description, important, this.dateCalc.format_mdy));
+        this.tasks.sort(() => this.#sortTasks);
         console.log(this.tasks);
     }
     removeTask(group, index) {
@@ -41,9 +41,9 @@ class Project {
 }
 
 class Task {
-    constructor(title, dueDate, description, important) {
+    constructor(title, dueDate, description, important, format_mdy) {
         this.title = title;
-        this.dueDate = format(new Date(dueDate), "MM-dd-yyyy");
+        this.dueDate = format_mdy(new Date(dueDate));
         this.description = description;
         this.important = important;
     }    
