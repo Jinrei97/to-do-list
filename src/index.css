@@ -41,3 +41,22 @@ body {
                 display: flex;
                 justify-content: center;
             }
+
+    .content.upcoming {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+        .content.upcoming > div:first-child {
+            grid-column: 1/-1;
+            justify-self: center;
+        }
+        .content.upcoming > div:first-child::before {
+            content: "Pick a date:";
+            padding-right: 1rem;
+        } 
+        .projectCards {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(4, 1fr);
+        }

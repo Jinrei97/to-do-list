@@ -75,6 +75,8 @@ export class Builder {
         const container = document.createElement("div");
         const datePicker = document.createElement("input");
         datePicker.type = "date";
+        datePicker.setAttribute("value", this.dateCalc.format(this.dateCalc.addWeeks(new Date(), 1), "yyyy-MM-dd"));
+        datePicker.classList.toggle("datePicker");
         container.appendChild(datePicker);
         return container;
     }

@@ -45,7 +45,7 @@ export class DisplayController {
         this.refreshProjectSidebar(projectList.project_list);
     }
 
-    // mosta le task di oggi
+    // mostra le task di oggi
     loadToday(projectList){
         this.cleanContent();
         this.changeContentClass("today");
@@ -55,16 +55,20 @@ export class DisplayController {
             this.content.appendChild(card); 
         }
     }
-    loadUpcoming(projectList){
+    loadUpcoming(projectList, setupDateSelector){
         this.cleanContent();
         this.changeContentClass("upcoming");
         const currentDate = this.dateCalc.format_mdy(new Date());
         const nextWeek = this.dateCalc.format_mdy(this.dateCalc.addWeeks(currentDate, 1));
         this.content.appendChild(this.builder.makeDateSelector());
+        setupDateSelector();
+        const containerCards = document.createElement("div");
+        containerCards.classList.toggle("projectCards");
         for (let project of projectList) {
             const card = this.builder.makeTaskCards(project, nextWeek);
-            this.content.appendChild(card); 
+            containerCards.appendChild(card); 
         }
+        this.content.appendChild(containerCards);
     }
     loadUrgent() {
 
