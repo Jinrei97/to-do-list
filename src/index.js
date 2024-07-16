@@ -13,6 +13,25 @@ const todoList = new class List {
         this.controller = new DisplayController(new Builder(dateCalculator), new GetFromDOM(), dateCalculator);
         this.projects = new ProjectList(dateCalculator);
         this.initializeTab();
+
+        this.refreshList = {
+            "projectList": () => this.controller.loadProjectList(
+                                    this.projects.project_list,
+                                    this.setupProjectCard.bind(this)
+            ) ,
+            "today": () => this.controller.loadToday(
+                            this.projects.project_list,
+                            this.setupProjectCard.bind(this)
+            ) ,
+            "upcoming": () => this.controller.loadUpcoming(this.projects.project_list,
+                            this.setupDateSelector.bind(this),
+                            this.setupImportant.bind(this),
+                            this.setupProjectCard.bind(this)
+            ) ,
+        };
+        console.log(this.refreshList["projectList"]);
+        console.log(this.refreshList["today"]);
+        console.log(this.refreshList["upcoming"]);
     }
     initializeTab() {
         const tabs = [document.querySelector(".tabs").children];
@@ -25,19 +44,9 @@ const todoList = new class List {
             this.controller.loadProjectForm(this.projects);
             this.setupSubmitButton.call(this); 
         });
-        btn_home.addEventListener("click", () => this.controller.loadProjectList(
-            this.projects.project_list,
-            this.setupProjectCard.bind(this)
-        ));
-        btn_today.addEventListener("click", () => this.controller.loadToday(
-            this.projects.project_list,
-            this.setupProjectCard.bind(this)
-        ));
-        btn_upcoming.addEventListener("click", () => this.controller.loadUpcoming(this.projects.project_list,
-            this.setupDateSelector.bind(this),
-            this.setupImportant.bind(this),
-            this.setupProjectCard.bind(this)
-        ));
+        btn_home.addEventListener("click", () => this.refreshList["projectList"]());
+        btn_today.addEventListener("click", () => this.refreshList["today"]());
+        btn_upcoming.addEventListener("click", () => this.refreshList["upcoming"]());
     }
     setupSubmitButton(){
         const btn_submit = document.querySelector(".submitProject");
@@ -57,8 +66,9 @@ const todoList = new class List {
             if (comparison === 1 || comparison === 0){
                 const containerCards = document.querySelector(".projectCards");
                 containerCards.replaceChildren();
-                for (let project of this.projects.project_list) {
+                for (const [index, project] of this.projects.project_list.entries()) {
                     const card = this.controller.builder.makeTaskCards(project, dateSelector.value);
+                    this.setupProjectCard(card, index);
                     containerCards.appendChild(card); 
                 }
             } else {
@@ -84,16 +94,31 @@ const todoList = new class List {
             );
         });
     }
+    #setupRemoveBtn(btn, projectIndex) {
+        btn.classList.add("RemoveProjectBtn");
+        btn.classList.add(`${projectIndex}`);
+        btn.textContent = "Delete Project";
+        btn.addEventListener("click", e => {
+            this.projects.removeProject(projectIndex);
+            const contentState = this.controller.content.classList[1];
+            this.refreshList[contentState]();
+        })
+    }
+    #setupLoadProjectBtn(btn, projectIndex) {
+        btn.classList.add("loadProjectBtn");
+        btn.classList.add(`${projectIndex}`);
+        btn.textContent = "Load Project Page";
+        btn.addEventListener("click", e => {
+            this.controller.loadSingleProject(projectIndex);
+        })
+    }
     setupProjectCard(card, projectIndex) {
         const loadProjectBtn = document.createElement("button");
-        loadProjectBtn.classList.add("loadProjectBtn");
-        loadProjectBtn.classList.add(`${projectIndex}`);
-        loadProjectBtn.textContent = "click_test";
-        loadProjectBtn.addEventListener("click", e => {
-            const index = e.target.classList[1];
-            console.log(index);
-        })
+        this.#setupLoadProjectBtn(loadProjectBtn, projectIndex);
+        const removeProjectBtn = document.createElement("button"); 
+        this.#setupRemoveBtn(removeProjectBtn, projectIndex);
         card.querySelector("div").appendChild(loadProjectBtn);
+        card.querySelector("div").appendChild(removeProjectBtn);
 
     }
 }
@@ -112,4 +137,5 @@ todoList.projects.project_list[0].addTask("test", "2025/03/14", "prova Task", fa
 todoList.projects.project_list[1].addTask("test_1", "2024/07/14", "prova Task", true);
 todoList.projects.project_list[1].addTask("test_2", "2024/07/14", "prova Task", false);
 todoList.projects.project_list[0].addTask("test_1", "2024/07/14", "prova Task", true);
-todoList.controller.loadProjectList(todoList.projects.project_list, todoList.setupProjectCard);
+todoList.controller.loadProjectList(todoList.projects.project_list,
+    (card, projectIndex) => todoList.setupProjectCard(card, projectIndex));
