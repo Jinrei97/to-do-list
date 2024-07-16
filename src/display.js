@@ -19,15 +19,6 @@ export class DisplayController {
         this.content.classList.toggle(className);
     }
 
-    loadProjectList(projectList) {
-        this.cleanContent();
-        this.changeContentClass("projectList"); 
-        for (let project of projectList) {
-            const card = this.builder.makeProjectCard(project);
-            this.content.appendChild(card); 
-        }
-        this.refreshProjectSidebar(projectList);
-    }
     // mostra un form per inserire un nuovo progetto
     loadProjectForm(projectList) {
         this.cleanContent();
@@ -36,17 +27,28 @@ export class DisplayController {
         this.refreshProjectSidebar(projectList.project_list);
     }
 
+    loadProjectList(projectList, setupProjectCard) {
+        this.cleanContent();
+        this.changeContentClass("projectList"); 
+        for (const [index, project] of projectList.entries()) {
+            const card = this.builder.makeProjectCard(project);
+            setupProjectCard(card, index);
+            this.content.appendChild(card); 
+        }
+        this.refreshProjectSidebar(projectList);
+    }
     // mostra le task di oggi
-    loadToday(projectList){
+    loadToday(projectList, setupProjectCard){
         this.cleanContent();
         this.changeContentClass("today");
         const currentDate = this.dateCalc.format_mdy(new Date());
-        for (let project of projectList) {
+        for (const [index, project] of projectList.entries()) {
             const card = this.builder.makeTaskCards(project, currentDate);
+            setupProjectCard(card, index);
             this.content.appendChild(card); 
         }
     }
-    loadUpcoming(projectList, setupDateSelector, setupImportant,
+    loadUpcoming(projectList, setupDateSelector, setupImportant, setupProjectCard,
         importantOnly = false,
         dateFilter = this.dateCalc.format_ymd(this.dateCalc.addWeeks(new Date(), 1)),
         impInitialValue = "false") {
@@ -58,13 +60,14 @@ export class DisplayController {
         setupImportant(impInitialValue);
         const containerCards = document.createElement("div");
         containerCards.classList.toggle("projectCards");
-        for (let project of projectList) {
+        for (const [index, project] of projectList.entries()) {
             const card = this.builder.makeTaskCards(project, dateFilter, importantOnly);
+            setupProjectCard(card, index);
             containerCards.appendChild(card); 
         }
         this.content.appendChild(containerCards);
     }
-    loadSingleProject() {
+    loadSingleProject(project) {
 
     }
 

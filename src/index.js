@@ -25,11 +25,18 @@ const todoList = new class List {
             this.controller.loadProjectForm(this.projects);
             this.setupSubmitButton.call(this); 
         });
-        btn_home.addEventListener("click", () => this.controller.loadProjectList(this.projects.project_list));
-        btn_today.addEventListener("click", () => this.controller.loadToday(this.projects.project_list));
+        btn_home.addEventListener("click", () => this.controller.loadProjectList(
+            this.projects.project_list,
+            this.setupProjectCard.bind(this)
+        ));
+        btn_today.addEventListener("click", () => this.controller.loadToday(
+            this.projects.project_list,
+            this.setupProjectCard.bind(this)
+        ));
         btn_upcoming.addEventListener("click", () => this.controller.loadUpcoming(this.projects.project_list,
             this.setupDateSelector.bind(this),
-            this.setupImportant.bind(this)
+            this.setupImportant.bind(this),
+            this.setupProjectCard.bind(this)
         ));
     }
     setupSubmitButton(){
@@ -70,15 +77,25 @@ const todoList = new class List {
             this.controller.loadUpcoming(this.projects.project_list,
                 this.setupDateSelector.bind(this),
                 this.setupImportant.bind(this),
+                this.setupProjectCard.bind(this),
                 ((impInput.value === "true") ? true : false),
                 datePicker.value,
                 impInput.value
             );
         });
-
+    }
+    setupProjectCard(card, projectIndex) {
+        const loadProjectBtn = document.createElement("button");
+        loadProjectBtn.classList.add("loadProjectBtn");
+        loadProjectBtn.classList.add(`${projectIndex}`);
+        loadProjectBtn.textContent = "click_test";
+        loadProjectBtn.addEventListener("click", e => {
+            const index = e.target.classList[1];
+            console.log(index);
+        })
+        card.querySelector("div").appendChild(loadProjectBtn);
 
     }
-
 }
 
 todoList.projects.addProject(["Test", "2025/03/12", "prova"]);
@@ -95,4 +112,4 @@ todoList.projects.project_list[0].addTask("test", "2025/03/14", "prova Task", fa
 todoList.projects.project_list[1].addTask("test_1", "2024/07/14", "prova Task", true);
 todoList.projects.project_list[1].addTask("test_2", "2024/07/14", "prova Task", false);
 todoList.projects.project_list[0].addTask("test_1", "2024/07/14", "prova Task", true);
-todoList.controller.loadProjectList(todoList.projects.project_list);
+todoList.controller.loadProjectList(todoList.projects.project_list, todoList.setupProjectCard);
